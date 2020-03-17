@@ -37,6 +37,7 @@ pub struct Universe {
 
 impl Universe {
     fn get_index(&self, row: u32, column: u32) -> usize {
+        // TODO: handle content outside of range
         (row * self.width + column) as usize
     }
 
@@ -133,11 +134,61 @@ impl Universe {
         self.cells[idx].toggle();
     }
 
+    pub fn insert_glider(&mut self, row: u32, column: u32) {
+        let mut idx = self.get_index(row, column);
+        // TODO: Consider adding a direction, or randomizing direction
+        //
+        // TODO: do not draw outside of range
+        self.cells[idx] = Cell::Alive;
+        idx = self.get_index(row + 1, column + 1);
+        self.cells[idx] = Cell::Alive;
+        idx = self.get_index(row + 1, column + 2);
+        self.cells[idx] = Cell::Alive;
+        idx = self.get_index(row + 2, column);
+        self.cells[idx] = Cell::Alive;
+        idx = self.get_index(row + 2, column + 1);
+        self.cells[idx] = Cell::Alive;
+    }
+
+    pub fn insert_pulsar(&mut self, row: u32, column: u32) {
+        // TODO: See if there is a more clever way to do this
+        //
+        // TODO: Check and see if overflow is an issue when drawing this
+        let mut idx;
+        for offset_row in 0..=12 {
+            if offset_row == 0 || offset_row == 5 || offset_row == 7 || offset_row == 12 {
+                // TODO: tighten up to single lines?
+                idx = self.get_index(row + offset_row, column + 2);
+                self.cells[idx] = Cell::Alive;
+                idx = self.get_index(row + offset_row, column + 3);
+                self.cells[idx] = Cell::Alive;
+                idx = self.get_index(row + offset_row, column + 4);
+                self.cells[idx] = Cell::Alive;
+                idx = self.get_index(row + offset_row, column + 8);
+                self.cells[idx] = Cell::Alive;
+                idx = self.get_index(row + offset_row, column + 9);
+                self.cells[idx] = Cell::Alive;
+                idx = self.get_index(row + offset_row, column + 10);
+                self.cells[idx] = Cell::Alive;
+            } else if offset_row == 2 || offset_row == 3 || offset_row == 4 ||
+                offset_row == 8 || offset_row == 9 || offset_row == 10 {
+                idx = self.get_index(row + offset_row, column + 0);
+                self.cells[idx] = Cell::Alive;
+                idx = self.get_index(row + offset_row, column + 5);
+                self.cells[idx] = Cell::Alive;
+                idx = self.get_index(row + offset_row, column + 7);
+                self.cells[idx] = Cell::Alive;
+                idx = self.get_index(row + offset_row, column + 12);
+                self.cells[idx] = Cell::Alive;
+            }
+        }
+    }
+
     pub fn clear_all(&mut self) {
         for row in 0..self.height {
             for col in 0..self.width {
                 let idx = self.get_index(row, col);
-                self.cells[idx] = Cell::Dead
+                self.cells[idx] = Cell::Dead;
             }
         }
     }
