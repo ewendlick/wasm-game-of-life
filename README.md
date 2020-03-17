@@ -50,15 +50,7 @@ npm run start
 wasm-pack test --headless --firefox
 ```
 
-## Tests
-
-
-```
-wasm-pack test --chrome --headless
-```
-
-`--firefox`, `--safari`, and `--node` are posisble
-
+`--chrome`, `--safari`, and `--node` are also possible
 
 
 
