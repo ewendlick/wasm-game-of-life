@@ -18,6 +18,8 @@ macro_rules! log {
     }
 }
 
+extern crate js_sys;
+
 #[wasm_bindgen]
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -67,13 +69,13 @@ impl Universe {
                 let cell = self.cells[idx];
                 let live_neighbors = self.live_neighbor_count(row, col);
 
-                log!(
-                    "cell[{}, {}] is initially {:?} and has {} live neighbors",
-                     row,
-                     col,
-                     cell,
-                     live_neighbors
-                );
+                // log!(
+                //     "cell[{}, {}] is initially {:?} and has {} live neighbors",
+                //      row,
+                //      col,
+                //      cell,
+                //      live_neighbors
+                // );
 
                 let next_cell = match (cell, live_neighbors) {
                     // Rule 1: Any live cell with fewer than two live neighbours
@@ -92,7 +94,7 @@ impl Universe {
                     (otherwise, _) => otherwise,
                 };
 
-                log!("    it becomes {:?}", next_cell);
+                // log!("    it becomes {:?}", next_cell);
 
                 next[idx] = next_cell;
             }
@@ -124,6 +126,39 @@ impl Universe {
     pub fn set_height(&mut self, height: u32) {
         self.height = height;
         self.cells = (0..self.width * height).map(|_i| Cell::Dead).collect();
+    }
+
+    pub fn toggle_cell(&mut self, row: u32, column: u32) {
+        let idx = self.get_index(row, column);
+        self.cells[idx].toggle();
+    }
+
+    pub fn clear_all(&mut self) {
+        for row in 0..self.height {
+            for col in 0..self.width {
+                let idx = self.get_index(row, col);
+                self.cells[idx] = Cell::Dead
+            }
+        }
+    }
+
+    pub fn generate_random(&mut self) {
+        self.cells = (0..self.width * self.height)
+            .map(|_i| {
+                if js_sys::Math::random() < 0.5  {
+                    Cell::Alive
+                } else {
+                    Cell::Dead
+                }
+            })
+            .collect();
+
+        // for row in 0..self.height {
+        //     for col in 0..self.width {
+        //         let idx = self.get_index(row, col);
+        //         self.cells[idx] = // random value
+        //     }
+        // }
     }
 
     pub fn new() -> Universe {
@@ -182,6 +217,15 @@ impl fmt::Display for Universe {
         }
 
         Ok(())
+    }
+}
+
+impl Cell {
+    fn toggle(&mut self) {
+        *self = match *self {
+            Cell::Dead => Cell::Alive,
+            Cell::Alive => Cell::Dead,
+        };
     }
 }
 
