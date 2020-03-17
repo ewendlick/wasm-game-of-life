@@ -32,19 +32,16 @@ templates and usages of `wasm-pack`.
 
 ## 🚴 Usage
 
-### 🐑 Use `cargo generate` to Clone this Template
-
-[Learn more about `cargo generate` here.](https://github.com/ashleygwilliams/cargo-generate)
-
-```
-cargo generate --git https://github.com/rustwasm/wasm-pack-template.git --name my-project
-cd my-project
-```
-
 ### 🛠️ Build with `wasm-pack build`
 
 ```
 wasm-pack build
+```
+
+### Check in the browser
+```
+cd wasm-game-of-life/www
+npm run start
 ```
 
 ### 🔬 Test in Headless Browsers with `wasm-pack test`
@@ -53,11 +50,6 @@ wasm-pack build
 wasm-pack test --headless --firefox
 ```
 
-### 🎁 Publish to NPM with `wasm-pack publish`
-
-```
-wasm-pack publish
-```
 
 ## 🔋 Batteries Included
 
